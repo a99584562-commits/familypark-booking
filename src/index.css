@@ -1,0 +1,116 @@
+@import 'tailwindcss';
+
+/* ───────────── Design tokens (light premium · glass · gradient · volume) ───────────── */
+@theme {
+  --font-sans: 'Golos Text', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --color-ink: #10231a;
+  --color-ink-soft: #3d5546;
+  --color-muted: #6f8478;
+  --color-line: #d7e3da;
+
+  --color-accent: #1f8a4c;
+  --color-accent-2: #34b46b;
+  --color-accent-soft: #e2f4e8;
+  --color-amber: #e9a23b;
+  --color-coral: #e4573c;
+
+  --color-paid: #cdeed9;
+  --color-paid-ink: #0f6b38;
+  --color-booked: #dbe9fb;
+  --color-booked-ink: #1d4f9a;
+  --color-tent: #fdeccb;
+  --color-tent-ink: #8a5a08;
+  --color-block: #f1e3e6;
+  --color-block-ink: #8a3b46;
+
+  --shadow-soft: 0 12px 32px -14px rgba(16, 60, 40, 0.22), 0 2px 6px -2px rgba(16, 60, 40, 0.06);
+  --shadow-lift: 0 22px 50px -20px rgba(16, 60, 40, 0.35), 0 4px 10px -4px rgba(16, 60, 40, 0.08);
+}
+
+@layer base {
+  html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  body { @apply bg-[#eef5f0] text-ink font-sans; font-feature-settings: 'tnum' 1; }
+  button { cursor: pointer; }
+  ::selection { background: #bfe8cf; }
+  input[type='date']::-webkit-calendar-picker-indicator { opacity: 0.55; }
+}
+
+/* Frosted glass surfaces */
+@utility glass {
+  background: rgba(255, 255, 255, 0.66);
+  backdrop-filter: blur(18px) saturate(1.35);
+  -webkit-backdrop-filter: blur(18px) saturate(1.35);
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 12px 32px -14px rgba(16, 60, 40, 0.22),
+    0 2px 6px -2px rgba(16, 60, 40, 0.06);
+}
+@utility glass-strong {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    0 22px 50px -20px rgba(16, 60, 40, 0.35),
+    0 4px 10px -4px rgba(16, 60, 40, 0.08);
+}
+@utility grad-accent {
+  background-image: linear-gradient(135deg, #22945a 0%, #3fbf75 55%, #6bd394 100%);
+}
+@utility grad-text {
+  background-image: linear-gradient(120deg, #1f8a4c, #34b46b 60%, #7cc9a0);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+@utility hatch {
+  background-image: repeating-linear-gradient(135deg, rgba(138, 59, 70, 0.16) 0 5px, transparent 5px 11px);
+}
+@utility scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(31, 138, 76, 0.35) transparent;
+}
+
+/* Mesh background */
+.mesh {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(55% 45% at 6% 4%, rgba(112, 214, 158, 0.42), transparent 62%),
+    radial-gradient(45% 40% at 94% 8%, rgba(255, 205, 140, 0.4), transparent 60%),
+    radial-gradient(50% 45% at 72% 96%, rgba(146, 192, 255, 0.36), transparent 62%),
+    radial-gradient(40% 35% at 14% 90%, rgba(255, 186, 196, 0.26), transparent 60%);
+}
+
+/* Motion */
+@keyframes pop {
+  from { opacity: 0; transform: translateY(12px) scale(0.985); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(31, 138, 76, 0.45); }
+  100% { box-shadow: 0 0 0 10px rgba(31, 138, 76, 0); }
+}
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(14px) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+.anim-pop { animation: pop 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.anim-fade { animation: fade-up 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.anim-fade-in { animation: fade-in 0.25s ease-out both; }
+.anim-toast { animation: toast-in 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.today-pulse { animation: pulse-ring 1.8s ease-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-pop, .anim-fade, .anim-fade-in, .anim-toast, .today-pulse { animation: none; }
+}
