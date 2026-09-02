@@ -147,13 +147,13 @@ export function Tile({
   sub?: ReactNode
 }) {
   return (
-    <div className="glass rounded-3xl px-5 py-4 flex items-center gap-4 min-w-0">
+    <div className="glass rounded-3xl px-4 py-3 flex items-center gap-3.5 min-w-0">
       {icon && (
-        <div className="grid place-items-center h-11 w-11 rounded-2xl grad-accent text-white shadow-soft shrink-0">{icon}</div>
+        <div className="grid place-items-center h-10 w-10 rounded-2xl grad-accent text-white shadow-soft shrink-0">{icon}</div>
       )}
       <div className="min-w-0">
         <div className="text-[11.5px] font-bold uppercase tracking-[.06em] text-muted">{label}</div>
-        <div className="text-[22px] font-extrabold leading-tight tabular-nums truncate">{value}</div>
+        <div className="text-[20px] font-extrabold leading-tight tabular-nums truncate">{value}</div>
         {sub && <div className="text-[12px] text-muted mt-0.5 truncate">{sub}</div>}
       </div>
     </div>

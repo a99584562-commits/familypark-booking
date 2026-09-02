@@ -26,12 +26,14 @@ export function MonthGrid({
   onOpen,
   onNew,
   onDay,
+  fullscreen = false,
 }: {
   cursor: string
   search: string
   onOpen: (id: string) => void
   onNew: (preset: { gazeboId: number; date: string }) => void
   onDay: (date: string) => void
+  fullscreen?: boolean
 }) {
   const bookings = useStore((s) => s.bookings)
   const days = useMemo(() => monthDays(cursor), [cursor])
@@ -66,7 +68,8 @@ export function MonthGrid({
   }, [bookings, prefix, days])
 
   return (
-    <div className="flex flex-col gap-4 anim-fade">
+    <div className={cx('flex flex-col anim-fade', fullscreen ? 'h-full gap-2' : 'gap-4')}>
+      {!fullscreen && (
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-3">
         <Tile
           icon={<CalendarCheck size={22} weight="fill" />}
@@ -83,6 +86,7 @@ export function MonthGrid({
           sub={`${stats.wkDays} ${plural(stats.wkDays, 'день', 'дня', 'дней')} пт–вс и праздники`}
         />
       </div>
+      )}
 
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-1 text-[12px] text-muted">
         {(['tentative', 'booked', 'paid', 'blocked'] as const).map((s) => (
@@ -98,21 +102,21 @@ export function MonthGrid({
         <span className="ml-auto hidden md:inline">Клик по пустой ячейке — новая бронь · клик по дате — таймлайн дня</span>
       </div>
 
-      <div className="glass rounded-3xl overflow-hidden">
-        <div className="overflow-auto max-h-[calc(100vh-330px)] min-h-[420px] scrollbar-thin">
+      <div className={cx('glass rounded-3xl overflow-hidden', fullscreen && 'flex-1 min-h-0 flex flex-col')}>
+        <div className={cx('overflow-auto scrollbar-thin', fullscreen ? 'flex-1 min-h-0' : 'max-h-[calc(100vh-300px)] min-h-[440px]')}>
           <table className="border-separate border-spacing-0 min-w-max text-left">
             <thead className="sticky top-0 z-30">
               <tr>
-                <th className="sticky left-0 z-40 bg-[#f4f9f5]/95 backdrop-blur px-3 py-2.5 border-b border-r border-line text-[11.5px] font-bold uppercase tracking-[.06em] text-muted min-w-[96px]">
+                <th className="sticky left-0 z-40 bg-[#f4f9f5]/95 backdrop-blur px-3 py-2.5 border-b border-r border-line text-[11.5px] font-bold uppercase tracking-[.06em] text-muted min-w-[104px]">
                   Дата
                 </th>
                 {GAZEBOS.map((g) => (
                   <th
                     key={g.id}
-                    className="bg-[#f4f9f5]/95 backdrop-blur min-w-[126px] px-2.5 py-2 border-b border-l border-line align-top font-normal"
+                    className="bg-[#f4f9f5]/95 backdrop-blur min-w-[148px] px-2.5 py-2 border-b border-l border-line align-top font-normal"
                   >
                     <div className="flex items-baseline gap-1.5">
-                      <span className="text-[15px] font-extrabold tracking-tight">№ {g.id}</span>
+                      <span className="text-[16px] font-extrabold tracking-tight">№ {g.id}</span>
                       <span className="text-[11px] text-muted font-semibold">{g.capacity} чел</span>
                     </div>
                     <div className="text-[11px] text-muted tabular-nums">
@@ -150,7 +154,10 @@ export function MonthGrid({
                         </span>
                       </div>
                       {hol && (
-                        <div className="mt-1 inline-block rounded-md bg-tent text-tent-ink text-[10px] font-semibold px-1.5 py-0.5 leading-tight max-w-[86px] truncate">
+                        <div
+                          className="mt-1 inline-block rounded-md bg-tent text-tent-ink text-[10px] font-semibold px-1.5 py-0.5 leading-tight max-w-[92px] truncate"
+                          title={`Праздничный тариф: ${hol} (лист «Тарифы 2026»)`}
+                        >
                           {hol}
                         </div>
                       )}
@@ -162,7 +169,7 @@ export function MonthGrid({
                         <td
                           key={g.id}
                           onClick={() => onNew({ gazeboId: g.id, date: d })}
-                          className="group relative align-top border-b border-l border-line/70 p-1 min-w-[126px] h-[64px] cursor-pointer transition-colors hover:bg-accent-soft/60"
+                          className="group relative align-top border-b border-l border-line/70 p-1 min-w-[148px] h-[76px] cursor-pointer transition-colors hover:bg-accent-soft/60"
                         >
                           <div className="flex flex-col gap-1">
                             {list.map((b) => {
@@ -183,11 +190,11 @@ export function MonthGrid({
                                   title={`${fmtRange(b.start, b.end)} · ${b.clientName}${b.guests ? ` · ${b.guests} чел` : ''}`}
                                 >
                                   {blocked ? (
-                                    <span className="block text-[11px] font-bold truncate">{b.clientName}</span>
+                                    <span className="block text-[11.5px] font-bold truncate">{b.clientName}</span>
                                   ) : (
                                     <>
-                                      <span className="block text-[11.5px] font-bold tabular-nums">{fmtRange(b.start, b.end)}</span>
-                                      <span className="block text-[11px] font-medium opacity-90 truncate">
+                                      <span className="block text-[12.5px] font-bold tabular-nums">{fmtRange(b.start, b.end)}</span>
+                                      <span className="block text-[11.5px] font-medium opacity-90 truncate">
                                         {shortName(b.clientName)} · {b.guests}
                                       </span>
                                     </>

@@ -18,11 +18,13 @@ export function DayTimeline({
   search,
   onOpen,
   onNew,
+  fullscreen = false,
 }: {
   date: string
   search: string
   onOpen: (id: string) => void
   onNew: (preset: { gazeboId: number; date: string; start: number; end: number }) => void
+  fullscreen?: boolean
 }) {
   const bookings = useStore((s) => s.bookings)
   const q = search.trim().toLowerCase()
@@ -50,7 +52,7 @@ export function DayTimeline({
   const hol = holidayName(date)
 
   return (
-    <div className="flex flex-col gap-4 anim-fade">
+    <div className={cx('flex flex-col anim-fade', fullscreen ? 'h-full gap-2' : 'gap-4')}>
       <div className="flex flex-wrap items-center gap-x-5 gap-y-2 px-1 text-[13px] text-ink-soft">
         <span className="inline-flex items-center gap-1.5">
           <span
@@ -70,8 +72,8 @@ export function DayTimeline({
         <span className="ml-auto text-[12px] text-muted hidden md:inline">Клик по свободному месту в строке — новая бронь с этого часа</span>
       </div>
 
-      <div className="glass rounded-3xl overflow-hidden">
-        <div className="overflow-auto max-h-[calc(100vh-250px)] scrollbar-thin">
+      <div className={cx('glass rounded-3xl overflow-hidden', fullscreen && 'flex-1 min-h-0 flex flex-col')}>
+        <div className={cx('overflow-auto scrollbar-thin', fullscreen ? 'flex-1 min-h-0' : 'max-h-[calc(100vh-250px)]')}>
           <div className="min-w-[1180px]">
             <div className="grid sticky top-0 z-30" style={{ gridTemplateColumns: '200px 1fr' }}>
               <div className="sticky left-0 z-40 bg-[#f4f9f5]/95 backdrop-blur px-3 py-2.5 border-b border-r border-line text-[11.5px] font-bold uppercase tracking-[.06em] text-muted">
@@ -105,7 +107,7 @@ export function DayTimeline({
                     )}
                   </div>
                   <div
-                    className="relative h-[60px] border-b border-line/70 cursor-pointer transition-colors hover:bg-accent-soft/40"
+                    className="relative h-[66px] border-b border-line/70 cursor-pointer transition-colors hover:bg-accent-soft/40"
                     onClick={(e) => {
                       const r = e.currentTarget.getBoundingClientRect()
                       const frac = (e.clientX - r.left) / r.width
