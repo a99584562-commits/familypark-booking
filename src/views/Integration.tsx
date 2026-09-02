@@ -1,21 +1,14 @@
 import {
   ArrowRight,
   ArrowsLeftRight,
-  BellRinging,
-  ChartLineUp,
   ChatCircleDots,
   CheckCircle,
   ClockCounterClockwise,
-  DeviceMobile,
-  Globe,
   Info,
-  Lightning,
   ListChecks,
   Money,
   Phone,
-  ShieldCheck,
   SquaresFour,
-  UserCircle,
   XCircle,
 } from '@phosphor-icons/react'
 import { fmtDateTime } from '../lib/date'
@@ -30,21 +23,12 @@ const MAPPING: [string, string][] = [
   ['Гостей', '«Количество гостей»'],
   ['Доп. услуги', 'Товарные позиции сделки'],
   ['Сумма', 'Сумма сделки — считается по тарифу'],
-  ['Предоплата', 'Оплата / счёт в сделке'],
+  ['Предоплата', 'Поле «Предоплата» в сделке'],
   ['Статус брони', 'Стадия воронки «Бронирования»'],
   ['Комментарий', 'Комментарий в таймлайне сделки'],
 ]
 
-const BENEFITS: { icon: typeof Lightning; title: string; text: string }[] = [
-  { icon: ShieldCheck, title: 'Нет двойного ввода', text: 'Бронь заводится один раз — в календаре или в сделке. Excel больше не нужен.' },
-  { icon: Lightning, title: 'Пересечения исключены', text: 'Календарь не даст поставить две брони на одно время и учтёт час перезаезда.' },
-  { icon: Money, title: 'Цена считается сама', text: 'Будни, выходные, праздники и доп. услуги — из тарифов. Администратор не считает в уме.' },
-  { icon: UserCircle, title: 'История клиента', text: 'Сколько раз был, что бронировал, средний чек — в карточке контакта Битрикс24.' },
-  { icon: BellRinging, title: 'Напоминания', text: 'За день до брони — клиенту в WhatsApp/SMS, администратору — задача в Битрикс24.' },
-  { icon: ChartLineUp, title: 'Отчёты', text: 'Загрузка беседок, выручка по дням, источники заявок — из тех же данных, без ручного сведения.' },
-]
-
-const KIND_ICON: Record<SyncEvent['kind'], { icon: typeof Lightning; cls: string }> = {
+const KIND_ICON: Record<SyncEvent['kind'], { icon: typeof CheckCircle; cls: string }> = {
   create: { icon: CheckCircle, cls: 'bg-booked text-booked-ink' },
   update: { icon: ArrowsLeftRight, cls: 'bg-[#eef2f7] text-ink-soft' },
   status: { icon: ListChecks, cls: 'bg-tent text-tent-ink' },
@@ -117,7 +101,7 @@ export function Integration() {
             <FlowCard
               icon={<SquaresFour size={20} weight="fill" />}
               title="Битрикс24"
-              lines={['Сделка в воронке «Бронирования»', 'Контакт клиента, оплата, задачи', 'Стадии = статусы брони']}
+              lines={['Сделка в воронке «Бронирования»', 'Контакт клиента, задачи', 'Стадии = статусы брони']}
               accent
             />
             <div className="hidden lg:grid place-items-center text-accent">
@@ -135,7 +119,7 @@ export function Integration() {
             <FlowCard
               icon={<ChatCircleDots size={20} weight="fill" />}
               title="Клиент"
-              lines={['Подтверждение в WhatsApp / SMS', 'Напоминание за день', 'Ссылка на оплату (этап 2)']}
+              lines={['Подтверждение в WhatsApp / SMS', 'Напоминание за день', 'История визитов в CRM']}
             />
           </div>
         </div>
@@ -175,7 +159,7 @@ export function Integration() {
           </table>
           <div className="mt-4 rounded-2xl bg-[#f4f9f5] border border-line p-3.5 text-[12.5px] text-ink-soft leading-relaxed">
             <b className="text-ink">Стадии воронки:</b> Новая бронь → Подтверждена → Оплачено · Отменена снимает бронь с календаря.
-            Оплата фиксируется в сделке — счёт, онлайн-платёж или «оплатили на месте».
+            Предоплата отмечается в сделке — как сейчас в таблице, только в одном месте.
           </div>
         </div>
 
@@ -206,59 +190,6 @@ export function Integration() {
             })}
           </ul>
         </div>
-      </div>
-
-      <div>
-        <SectionTitle sub="Что появляется вместе с календарём — без отдельных доработок.">Что вы получаете</SectionTitle>
-        <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4 mt-4">
-          {BENEFITS.map((b) => (
-            <div key={b.title} className="glass rounded-3xl p-5">
-              <div className="grid place-items-center h-10 w-10 rounded-2xl bg-accent-soft text-accent mb-3">
-                <b.icon size={22} weight="fill" />
-              </div>
-              <div className="font-extrabold text-[15px]">{b.title}</div>
-              <p className="text-[13px] text-ink-soft leading-relaxed mt-1">{b.text}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div>
-        <SectionTitle sub="Одно приложение — три точки входа.">Где живёт календарь</SectionTitle>
-        <div className="grid lg:grid-cols-3 gap-4 mt-4">
-          {[
-            { icon: SquaresFour, t: 'Внутри Битрикс24', d: 'Пункт в левом меню портала и вкладка «Календарь» в карточке сделки. Сотрудники ничего нового не осваивают.' },
-            { icon: DeviceMobile, t: 'На телефоне', d: 'Ссылка для администраторов на смене: посмотреть свободные окна и принять бронь прямо у ворот.' },
-            { icon: Globe, t: 'На сайте · этап 2', d: 'Гость сам выбирает беседку и время, вносит предоплату. Бронь появляется в Битрикс24 и в шахматке.' },
-          ].map((c) => (
-            <div key={c.t} className="glass rounded-3xl p-5 flex gap-4">
-              <div className="grid place-items-center h-10 w-10 rounded-2xl bg-white border border-line text-accent shrink-0">
-                <c.icon size={22} weight="fill" />
-              </div>
-              <div>
-                <div className="font-extrabold text-[15px]">{c.t}</div>
-                <p className="text-[13px] text-ink-soft leading-relaxed mt-1">{c.d}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="glass rounded-3xl p-6">
-        <SectionTitle>Дорожная карта</SectionTitle>
-        <ol className="mt-4 grid md:grid-cols-3 gap-4">
-          {[
-            { t: 'Этап 1 · Календарь + сделки', d: 'Шахматка, таймлайн, карточка брони, тарифы, синхронизация с воронкой «Бронирования», блокировки на ремонт.' },
-            { t: 'Этап 2 · Онлайн-бронь', d: 'Виджет на сайте, предоплата онлайн, автоматическое подтверждение клиенту в WhatsApp / SMS.' },
-            { t: 'Этап 3 · Повторные продажи', d: 'Напоминания, сбор отзывов, акции «ДР −10%», рассылки постоянным гостям по истории броней.' },
-          ].map((s, i) => (
-            <li key={s.t} className="relative rounded-2xl bg-white/70 border border-white/80 p-4">
-              <div className="text-[11px] font-bold uppercase tracking-[.08em] text-accent">шаг {i + 1}</div>
-              <div className="font-extrabold text-[15px] mt-1">{s.t}</div>
-              <p className="text-[13px] text-ink-soft leading-relaxed mt-1">{s.d}</p>
-            </li>
-          ))}
-        </ol>
       </div>
     </div>
   )
